@@ -22,9 +22,7 @@
 			</p>
 
 			<form method="POST" action="?/manual" use:enhance>
-				<label for="token" class="mb-2 block text-sm font-medium text-gray-300">
-					Plex Token
-				</label>
+				<label for="token" class="mb-2 block text-sm font-medium text-gray-300"> Plex Token </label>
 				<input
 					type="text"
 					id="token"
