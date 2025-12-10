@@ -107,9 +107,14 @@
 							Open Plex Authorization Page
 						</button>
 
-						<p class="mt-4 text-xs text-gray-400">
-							A new tab should have opened. Enter the code above, then close the tab.
-						</p>
+						<div class="mt-4 rounded-lg bg-surface-card/50 p-4">
+							<p class="mb-2 text-xs font-medium text-gray-300">Next steps:</p>
+							<ol class="space-y-1 text-xs text-gray-400">
+								<li>1. Enter the code on Plex</li>
+								<li>2. Click "Continue" to authorize</li>
+								<li>3. Return to this page (we'll detect it automatically)</li>
+							</ol>
+						</div>
 					{:else if status === 'success'}
 						<div class="mb-6 flex items-center justify-center">
 							<svg class="h-16 w-16 text-green-500" fill="none" viewBox="0 0 24 24">
