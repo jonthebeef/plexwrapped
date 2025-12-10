@@ -16,13 +16,7 @@ const config = {
 				'style-src': ['self', 'unsafe-inline', 'https://fonts.googleapis.com'],
 				'font-src': ['self', 'https://fonts.gstatic.com'],
 				'img-src': ['self', 'data:', 'https:'],
-				'connect-src': [
-					'self',
-					'https:',
-					'http://localhost:*',
-					'http://127.0.0.1:*',
-					'http://192.168.*.*:*'
-				],
+				'connect-src': ['self', 'https:', 'http:'],
 				'frame-ancestors': ['none']
 			}
 		}
