@@ -38,6 +38,58 @@ Run a single test file:
 npx vitest run src/lib/services/stats.test.ts
 ```
 
+## Claude Model Selection
+
+Before starting each task, assess complexity and recommend the appropriate model:
+
+### Model Capabilities
+
+| Model | Speed | Intelligence | Cost | Best For |
+|-------|-------|--------------|------|----------|
+| **Haiku 4.5** | Fastest | Near-frontier | $1-5/MTok | Simple refactors, formatting, unit tests, quick fixes |
+| **Sonnet 4.5** | Fast | Best balance | $3-15/MTok | Complex features, architecture, multi-file changes (current default) |
+| **Opus 4.5** | Moderate | Maximum | $5-25/MTok | Enterprise-scale refactoring, critical architecture decisions |
+
+### Task Complexity Assessment
+
+**Use Haiku** (`claude --model haiku`) for:
+- Formatting and linting fixes
+- Simple bug fixes in single files
+- Unit test generation
+- Code comments and documentation
+- Straightforward refactoring
+
+**Use Sonnet** (current default) for:
+- New feature implementation
+- Multi-file changes and refactoring
+- API integration
+- Complex state management
+- Architecture decisions
+
+**Use Opus** (`claude --model opus`) for:
+- Large-scale codebase refactoring
+- Critical security implementations
+- Complex algorithm optimization
+- When maximum reasoning is essential
+
+### Recommendation Process
+
+Before starting the next task from the todo list:
+1. Assess task complexity (simple/moderate/complex)
+2. Consider scope (single file vs multi-file)
+3. Evaluate criticality (non-critical vs production-critical)
+4. Recommend model to user with brief justification
+5. Wait for user confirmation before proceeding
+
+**Example:**
+> "Next task: Build Plex API client to fetch play history
+>
+> **Complexity:** Moderate - multi-file API integration
+> **Recommendation:** Continue with Sonnet (current model)
+> **Rationale:** Requires understanding Plex API, error handling, and TypeScript types
+>
+> Proceed with Sonnet? Or switch to Haiku/Opus?"
+
 ## Development Workflow
 
 ### Git & CI Process
