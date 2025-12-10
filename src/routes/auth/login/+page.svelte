@@ -14,18 +14,12 @@
 
 		<!-- Development: Manual token entry -->
 		<div class="rounded-lg bg-surface-card p-6">
-			<p class="mb-4 text-sm text-gray-300">
-				Temporary dev auth: Get your Plex auth token:
-			</p>
+			<p class="mb-4 text-sm text-gray-300">Temporary dev auth: Get your Plex auth token:</p>
 
 			<ol class="mb-4 space-y-2 text-sm text-gray-400">
 				<li>
 					1. Go to
-					<a
-						href="https://app.plex.tv/desktop"
-						target="_blank"
-						class="text-plex hover:underline"
-					>
+					<a href="https://app.plex.tv/desktop" target="_blank" class="text-plex hover:underline">
 						app.plex.tv
 					</a>
 				</li>
