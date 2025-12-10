@@ -1,5 +1,5 @@
 <script lang="ts">
-	// Landing page - will have sign in with Plex button
+	let { data } = $props();
 </script>
 
 <svelte:head>
@@ -15,11 +15,21 @@
 		<p class="text-xl text-gray-400 md:text-2xl">Your year in music, beautifully wrapped.</p>
 
 		<div class="pt-8">
-			<button
-				class="rounded-full bg-plex px-8 py-4 text-lg font-semibold text-black transition-colors hover:bg-plex-dark"
-			>
-				Sign in with Plex
-			</button>
+			{#if data.user}
+				<a
+					href="/wrapped"
+					class="inline-block rounded-full bg-plex px-8 py-4 text-lg font-semibold text-black transition-colors hover:bg-plex-dark"
+				>
+					View Your Wrapped
+				</a>
+			{:else}
+				<a
+					href="/auth/login"
+					class="inline-block rounded-full bg-plex px-8 py-4 text-lg font-semibold text-black transition-colors hover:bg-plex-dark"
+				>
+					Sign in with Plex
+				</a>
+			{/if}
 		</div>
 
 		<p class="pt-8 text-sm text-gray-500">
