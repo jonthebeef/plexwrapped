@@ -15,7 +15,12 @@ const config = {
 				'script-src': ['self'],
 				'style-src': ['self', 'unsafe-inline'],
 				'img-src': ['self', 'data:', 'https:'],
-				'connect-src': ['self', 'https://plex.tv', 'https://*.plex.direct', 'https://*.supabase.co'],
+				'connect-src': [
+					'self',
+					'https://plex.tv',
+					'https://*.plex.direct',
+					'https://*.supabase.co'
+				],
 				'frame-ancestors': ['none']
 			}
 		}

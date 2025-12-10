@@ -12,23 +12,27 @@ If you discover a security vulnerability in Plex Wrapped, please report it respo
 ## Security Measures
 
 ### Authentication
+
 - Plex OAuth for user authentication (no passwords stored)
 - Auth tokens stored in httpOnly cookies (not localStorage)
 - CSRF protection enabled
 
 ### Data Privacy
+
 - We only read your Plex listening history
 - We do not modify your Plex library
 - Cached stats can be deleted by the user
 - No raw play history is stored, only aggregated stats
 
 ### Infrastructure
+
 - All traffic over HTTPS
 - Content Security Policy (CSP) headers configured
 - Security headers: X-Frame-Options, X-Content-Type-Options, etc.
 - Regular dependency audits via Dependabot
 
 ### Code Security
+
 - All user inputs validated with Zod schemas
 - No eval() or dynamic code execution
 - Secrets managed via environment variables

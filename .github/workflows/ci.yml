@@ -104,7 +104,7 @@ jobs:
 
       - name: Run npm audit
         run: npm audit --audit-level=high
-        continue-on-error: true  # Don't fail on moderate vulnerabilities
+        continue-on-error: true # Don't fail on moderate vulnerabilities
 
       - name: Check for secrets in code
         uses: trufflesecurity/trufflehog@main
