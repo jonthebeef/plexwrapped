@@ -117,7 +117,23 @@ Before starting the next task from the todo list:
    npm run build     # Production build
    ```
 
+   **CRITICAL:** These checks are MANDATORY before every commit/push. CI will fail if any of these fail.
+
+   **Auto-fix formatting issues:**
+
+   ```bash
+   npm run format    # Run this if lint fails
+   ```
+
 4. **Commit with conventional commits** (feat:, fix:, docs:, ci:, etc.)
+
+   **BEFORE pushing**, verify one final time:
+
+   ```bash
+   npm run lint && npm run check
+   ```
+
+   If this passes, you're safe to push.
 
 5. **Push and create PR**:
 
