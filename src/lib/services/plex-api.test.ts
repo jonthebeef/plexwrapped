@@ -184,7 +184,7 @@ describe('plex-api', () => {
 	});
 
 	describe('getBestServerUrl', () => {
-		it('prefers HTTPS non-local connections', () => {
+		it('prefers local connections', () => {
 			const server: PlexServer = {
 				clientIdentifier: 'abc123',
 				name: 'My Server',
@@ -218,10 +218,10 @@ describe('plex-api', () => {
 
 			const url = getBestServerUrl(server);
 
-			expect(url).toBe('https://abc123.plex.direct:32400');
+			expect(url).toBe('http://192.168.1.100:32400');
 		});
 
-		it('falls back to first connection if no HTTPS', () => {
+		it('falls back to first connection if no local', () => {
 			const server: PlexServer = {
 				clientIdentifier: 'abc123',
 				name: 'My Server',

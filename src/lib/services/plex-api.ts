@@ -122,19 +122,17 @@ export async function getPlayHistory(
 
 /**
  * Get the best server URL for a server
- * Prefers HTTPS, then local, then any available connection
+ * Prefers local connections (accessible from browser), then falls back to remote
  */
 export function getBestServerUrl(server: PlexServer): string {
 	if (!server.connections || server.connections.length === 0) {
 		throw new Error('Server has no available connections');
 	}
 
-	// Prefer HTTPS connections
-	const httpsConnection = server.connections.find(
-		(conn) => conn.protocol === 'https' && !conn.local
-	);
-	if (httpsConnection) {
-		return httpsConnection.uri;
+	// Prefer local connections (same network/VPN - browser can reach these)
+	const localConnection = server.connections.find((conn) => conn.local);
+	if (localConnection) {
+		return localConnection.uri;
 	}
 
 	// Fall back to first available connection
