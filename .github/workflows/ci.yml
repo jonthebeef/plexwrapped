@@ -50,6 +50,11 @@ jobs:
 
       - name: Run svelte-check
         run: npm run check
+        env:
+          PUBLIC_PLEX_CLIENT_ID: plex-wrapped
+          PUBLIC_SUPABASE_URL: https://placeholder.supabase.co
+          PUBLIC_SUPABASE_ANON_KEY: placeholder
+          PUBLIC_APP_URL: https://plexwrapped.com
 
   test:
     name: Tests
@@ -86,6 +91,11 @@ jobs:
 
       - name: Build
         run: npm run build
+        env:
+          PUBLIC_PLEX_CLIENT_ID: plex-wrapped
+          PUBLIC_SUPABASE_URL: https://placeholder.supabase.co
+          PUBLIC_SUPABASE_ANON_KEY: placeholder
+          PUBLIC_APP_URL: https://plexwrapped.com
 
   security:
     name: Security Audit
