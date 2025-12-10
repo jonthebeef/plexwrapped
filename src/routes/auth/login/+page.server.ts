@@ -1,34 +1,10 @@
 import { redirect, fail } from '@sveltejs/kit';
-import {
-	createPlexPin,
-	getPlexAuthUrl,
-	getPlexUser,
-	exchangeClaimToken
-} from '$lib/services/plex-auth';
+import { getPlexUser, exchangeClaimToken } from '$lib/services/plex-auth';
 import type { Actions } from './$types';
 
 export const actions: Actions = {
-	// OAuth flow (currently disabled - waiting for Plex approval)
-	default: async ({ cookies }) => {
-		// Create a new PIN
-		const pin = await createPlexPin();
-
-		// Store PIN ID in a cookie so we can check it later
-		cookies.set('plex_pin_id', String(pin.id), {
-			path: '/',
-			httpOnly: true,
-			secure: true,
-			sameSite: 'lax',
-			maxAge: 60 * 10 // 10 minutes
-		});
-
-		// Redirect to Plex auth page
-		const authUrl = getPlexAuthUrl(pin.code);
-		throw redirect(303, authUrl);
-	},
-
-	// Manual token auth for development
-	manual: async ({ cookies, request }) => {
+	// Manual token auth for development (default action)
+	default: async ({ cookies, request }) => {
 		const data = await request.formData();
 		let token = (data.get('token') as string)?.trim();
 
