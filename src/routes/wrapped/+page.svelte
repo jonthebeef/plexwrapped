@@ -33,15 +33,52 @@
 			</button>
 		</header>
 
-		<main class="text-center">
-			<h1 class="mb-4 text-4xl font-bold text-plex">Your 2024 Wrapped</h1>
-			<p class="mb-8 text-gray-400">We're building something beautiful here. Check back soon!</p>
+		<main>
+			<h1 class="mb-4 text-center text-4xl font-bold text-plex">Your 2024 Wrapped</h1>
+			<p class="mb-8 text-center text-gray-400">
+				Connected to your Plex account! Here's what we found:
+			</p>
 
-			<div class="rounded-2xl bg-surface-card p-12">
-				<p class="text-6xl">🎵</p>
-				<p class="mt-4 text-xl text-gray-300">Stats coming soon...</p>
-				<p class="mt-2 text-sm text-gray-500">Next up: fetching your listening history from Plex</p>
+			<div class="grid gap-6 md:grid-cols-3">
+				<div class="rounded-2xl bg-surface-card p-8 text-center">
+					<p class="text-5xl font-bold text-plex">{data.plexData.serverCount}</p>
+					<p class="mt-2 text-sm text-gray-400">
+						Plex {data.plexData.serverCount === 1 ? 'Server' : 'Servers'}
+					</p>
+				</div>
+
+				<div class="rounded-2xl bg-surface-card p-8 text-center">
+					<p class="text-5xl font-bold text-plex">{data.plexData.musicLibraryCount}</p>
+					<p class="mt-2 text-sm text-gray-400">
+						Music {data.plexData.musicLibraryCount === 1 ? 'Library' : 'Libraries'}
+					</p>
+				</div>
+
+				<div class="rounded-2xl bg-surface-card p-8 text-center">
+					<p class="text-5xl font-bold text-plex">{data.plexData.playCount}</p>
+					<p class="mt-2 text-sm text-gray-400">Recent Plays</p>
+				</div>
 			</div>
+
+			{#if data.plexData.serverName && data.plexData.libraryName}
+				<div class="mt-8 rounded-2xl bg-surface-card p-8">
+					<p class="text-center text-6xl">🎵</p>
+					<p class="mt-4 text-center text-xl text-gray-300">
+						Fetching data from <span class="font-semibold text-plex"
+							>{data.plexData.serverName}</span
+						>
+					</p>
+					<p class="mt-2 text-center text-sm text-gray-500">
+						Library: {data.plexData.libraryName}
+					</p>
+					<p class="mt-6 text-center text-sm text-gray-400">
+						✅ Successfully connected to your Plex music library!
+					</p>
+					<p class="mt-2 text-center text-sm text-gray-500">
+						Next up: calculate your top artists, albums, and tracks
+					</p>
+				</div>
+			{/if}
 		</main>
 	</div>
 </div>
