@@ -80,6 +80,28 @@ export async function checkPinStatus(pinId: number): Promise<string | null> {
 }
 
 /**
+ * Exchange a claim token for a permanent auth token
+ * Claim tokens are from plex.tv/claim and are temporary
+ */
+export async function exchangeClaimToken(claimToken: string): Promise<string> {
+	const response = await fetch(`https://plex.tv/api/claim/exchange?token=${claimToken}`, {
+		method: 'POST',
+		headers: PLEX_HEADERS
+	});
+
+	if (!response.ok) {
+		throw new Error(`Failed to exchange claim token: ${response.status} ${response.statusText}`);
+	}
+
+	const data = await response.json();
+	if (!data.authToken) {
+		throw new Error('No auth token returned from claim exchange');
+	}
+
+	return data.authToken;
+}
+
+/**
  * Get the authenticated user's Plex profile
  */
 export async function getPlexUser(authToken: string): Promise<PlexUser> {
