@@ -33,16 +33,68 @@ npm run format       # Auto-format code
 ```
 
 Run a single test file:
+
 ```bash
 npx vitest run src/lib/services/stats.test.ts
 ```
 
 ## Development Workflow
 
-- **TDD:** Write tests first
-- **Branches:** Use feature branches (`feature/xyz`), create PRs to merge to `main`
-- **Auto-deploy:** Merging to `main` triggers Netlify deployment
-- **Zero Trust Security:** All inputs validated with Zod, secure token handling (httpOnly cookies), CSP headers configured
+### Git & CI Process
+
+1. **Start each task** by creating a feature branch from `main`:
+
+   ```bash
+   git checkout main && git pull origin main
+   git checkout -b feature/task-name   # or fix/, docs/, ci/
+   ```
+
+2. **Write tests first** (TDD) - tests go in `*.test.ts` files alongside source
+
+3. **Run checks locally** before committing:
+
+   ```bash
+   npm run lint      # Prettier + ESLint
+   npm run check     # TypeScript/Svelte checking
+   npm test -- --run # Vitest
+   npm run build     # Production build
+   ```
+
+4. **Commit with conventional commits** (feat:, fix:, docs:, ci:, etc.)
+
+5. **Push and create PR**:
+
+   ```bash
+   git push -u origin feature/task-name
+   gh pr create --title "feat: description" --body "..."
+   ```
+
+6. **CI runs automatically** on PR - 5 parallel jobs:
+
+   - `lint` - Prettier formatting + ESLint rules
+   - `typecheck` - svelte-check with TypeScript
+   - `test` - Vitest test suite
+   - `build` - Production build verification
+   - `security` - npm audit + TruffleHog secret scanning
+
+7. **Merge to main** triggers Netlify auto-deploy to production
+
+### Branch Protection (GitHub)
+
+- PRs required to merge to `main`
+- All CI checks must pass
+- Branch must be up to date before merging
+
+### Security Principles
+
+- **Zero Trust:** All inputs validated with Zod
+- **Secure tokens:** httpOnly cookies (not localStorage)
+- **CSP headers:** Configured in svelte.config.js
+- **Secret scanning:** TruffleHog runs on every PR
+
+### Build in Public
+
+After completing each task, generate a Threads post for @jonthebeef documenting the progress. Keep it conversational, authentic, and focused on what was built/learned.
 
 ## Architecture
 
@@ -73,6 +125,7 @@ src/
 ### Plex API Integration
 
 Key endpoints used (all require `X-Plex-Token` header):
+
 - `POST https://plex.tv/api/v2/pins` - Create auth PIN
 - `GET https://plex.tv/api/v2/pins/{id}` - Poll for auth token
 - `GET https://plex.tv/api/v2/resources` - Get user's servers
@@ -81,10 +134,12 @@ Key endpoints used (all require `X-Plex-Token` header):
 ### Security Configuration
 
 CSP directives in `svelte.config.js` allow connections to:
+
 - `plex.tv` and `*.plex.direct` (Plex API)
 - `*.supabase.co` (Database)
 
 Security headers in `netlify.toml`:
+
 - X-Frame-Options: DENY
 - X-Content-Type-Options: nosniff
 - Strict Referrer-Policy
@@ -92,12 +147,14 @@ Security headers in `netlify.toml`:
 ## Tailwind Theme
 
 Plex-inspired colors defined in `tailwind.config.js`:
+
 - `plex` / `plex-dark` / `plex-light` - Plex gold (#e5a00d)
 - `surface` / `surface-card` / `surface-elevated` - Dark backgrounds (#1f1f1f, #2a2a2a)
 
 ## Environment Variables
 
 See `.env.example` for required variables:
+
 - `PUBLIC_SUPABASE_URL` / `PUBLIC_SUPABASE_ANON_KEY` - Supabase connection
 - `SUPABASE_SERVICE_KEY` - Server-side only
 - `PUBLIC_PLEX_CLIENT_ID` - Plex app identifier
@@ -107,11 +164,13 @@ See `.env.example` for required variables:
 ## Current Progress
 
 Completed:
+
 - [x] SvelteKit + Tailwind scaffold
 - [x] Netlify deployment configured
 - [x] Security headers and CSP
 
 Next up (see SPEC.md for full roadmap):
+
 - [ ] Plex OAuth flow
 - [ ] Fetch play history
 - [ ] Stats calculation

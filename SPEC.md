@@ -13,17 +13,20 @@ A web application that generates Spotify Wrapped-style year-in-review experience
 ## Why This Exists
 
 ### The Gap
+
 - Plex has no native "Wrapped" feature
 - Existing tools (Tautulli, Plex Rewind) are technical, installation-heavy, and video-focused
 - No polished, zero-friction music stats experience for Plex users
 
 ### The Opportunity
+
 - 800k+ members on r/PleX, 400k+ on r/selfhosted
 - Self-hosted community loves "your data, your stats" narrative
 - December timing capitalizes on Wrapped season buzz
 - Music-first differentiates from existing tools
 
 ### The Advantage of Web App
+
 - Zero installation - just log in with Plex
 - Works on any device
 - Shareable by design
@@ -35,18 +38,19 @@ A web application that generates Spotify Wrapped-style year-in-review experience
 
 ### Stack
 
-| Layer | Technology | Rationale |
-|-------|------------|-----------|
-| **Frontend** | SvelteKit | Fast, modern, excellent Netlify support, fun to learn |
-| **Hosting** | Netlify | Preferred platform, generous free tier, great DX |
-| **Database** | Supabase (PostgreSQL) | Free tier, auth helpers, real-time if needed |
-| **Auth** | Plex OAuth | Native Plex login, no passwords to manage |
-| **Styling** | Tailwind CSS | Rapid UI development, consistent design |
-| **Image Gen** | Satori + Resvg (or html-to-image) | For shareable stats cards |
+| Layer         | Technology                        | Rationale                                             |
+| ------------- | --------------------------------- | ----------------------------------------------------- |
+| **Frontend**  | SvelteKit                         | Fast, modern, excellent Netlify support, fun to learn |
+| **Hosting**   | Netlify                           | Preferred platform, generous free tier, great DX      |
+| **Database**  | Supabase (PostgreSQL)             | Free tier, auth helpers, real-time if needed          |
+| **Auth**      | Plex OAuth                        | Native Plex login, no passwords to manage             |
+| **Styling**   | Tailwind CSS                      | Rapid UI development, consistent design               |
+| **Image Gen** | Satori + Resvg (or html-to-image) | For shareable stats cards                             |
 
 ### Alternative DB: Convex
 
 Convex is interesting but:
+
 - Supabase free tier: 500MB database, 2GB bandwidth, unlimited API calls
 - Convex free tier: 1GB storage, but more opinionated data model
 - Supabase is more conventional (SQL), Convex is more reactive/real-time focused
@@ -95,12 +99,14 @@ Convex is interesting but:
 ### Authentication Flow
 
 1. **Create PIN**: `POST https://plex.tv/api/v2/pins`
+
    - Headers: `X-Plex-Client-Identifier`, `X-Plex-Product`
    - Returns: `id` and `code`
 
 2. **Redirect user**: `https://app.plex.tv/auth#?clientID={id}&code={code}&context[device][product]=Plex%20Wrapped`
 
 3. **Poll for token**: `GET https://plex.tv/api/v2/pins/{id}`
+
    - When authorized, returns `authToken`
 
 4. **Get user info**: `GET https://plex.tv/api/v2/user`
@@ -129,22 +135,22 @@ Headers: X-Plex-Token: {token}
 
 ```json
 {
-  "MediaContainer": {
-    "size": 1000,
-    "Metadata": [
-      {
-        "historyKey": "/status/sessions/history/1",
-        "key": "/library/metadata/12345",
-        "ratingKey": "12345",
-        "title": "Track Name",
-        "grandparentTitle": "Artist Name",
-        "parentTitle": "Album Name",
-        "type": "track",
-        "viewedAt": 1702234567,
-        "accountID": 1
-      }
-    ]
-  }
+	"MediaContainer": {
+		"size": 1000,
+		"Metadata": [
+			{
+				"historyKey": "/status/sessions/history/1",
+				"key": "/library/metadata/12345",
+				"ratingKey": "12345",
+				"title": "Track Name",
+				"grandparentTitle": "Artist Name",
+				"parentTitle": "Album Name",
+				"type": "track",
+				"viewedAt": 1702234567,
+				"accountID": 1
+			}
+		]
+	}
 }
 ```
 
@@ -205,17 +211,20 @@ CREATE INDEX idx_wrapped_user_year ON wrapped_results(user_id, year);
 ### Privacy Approach Options
 
 **Option A: No storage (most private)**
+
 - Fetch from Plex, calculate stats, render, forget
 - User must re-fetch each visit
 - Can't share links (no persistent data)
 
 **Option B: Cache results only (balanced)**
+
 - Store calculated stats (top artists, totals, etc.)
 - Don't store individual play history
 - Enable shareable links
 - Users can delete their data
 
 **Option C: Full history (most features)**
+
 - Store individual plays for year-over-year comparisons
 - Requires clear privacy policy
 - More storage, more responsibility
@@ -229,6 +238,7 @@ CREATE INDEX idx_wrapped_user_year ON wrapped_results(user_id, year);
 ### MVP (Week 1) - Launch Target
 
 **Core Features:**
+
 - [ ] Plex OAuth login
 - [ ] Fetch play history from user's server
 - [ ] Calculate and display:
@@ -242,11 +252,13 @@ CREATE INDEX idx_wrapped_user_year ON wrapped_results(user_id, year);
 - [ ] Basic share functionality (link or screenshot prompt)
 
 **Pages:**
+
 - `/` - Landing page with sign-in
 - `/wrapped` - Main wrapped experience (authed)
 - `/share/[id]` - Public view of someone's wrapped
 
 **Technical:**
+
 - [ ] SvelteKit project setup
 - [ ] Netlify deployment
 - [ ] Supabase integration
@@ -256,6 +268,7 @@ CREATE INDEX idx_wrapped_user_year ON wrapped_results(user_id, year);
 ### Post-MVP (Week 2-3)
 
 **Enhanced Stats:**
+
 - [ ] Listening trends by month (chart)
 - [ ] Most played day of the week
 - [ ] Longest listening streak
@@ -263,12 +276,14 @@ CREATE INDEX idx_wrapped_user_year ON wrapped_results(user_id, year);
 - [ ] Peak listening hour
 
 **Fun Insights:**
+
 - [ ] "Your top song could have played X times during [event]"
 - [ ] "You listened to [artist] more than X% of users" (if we have comparison data)
 - [ ] "Hidden gem" - least popular track you loved
 - [ ] "Guilty pleasure" - most played track from smallest genre
 
 **Sharing:**
+
 - [ ] Generate shareable image cards (Satori)
 - [ ] Twitter/social media meta tags
 - [ ] Copy-to-clipboard stats
@@ -276,6 +291,7 @@ CREATE INDEX idx_wrapped_user_year ON wrapped_results(user_id, year);
 ### Future (Post-Launch)
 
 **Features:**
+
 - [ ] Year-over-year comparisons (requires storing history)
 - [ ] TV/Movie mode (expand beyond music)
 - [ ] Multi-user household support
@@ -284,6 +300,7 @@ CREATE INDEX idx_wrapped_user_year ON wrapped_results(user_id, year);
 - [ ] "Wrapped Party" - compare with friends
 
 **Technical:**
+
 - [ ] Performance optimization for large libraries
 - [ ] Background job processing for slow servers
 - [ ] Webhook for real-time updates (overkill but cool)
@@ -293,12 +310,14 @@ CREATE INDEX idx_wrapped_user_year ON wrapped_results(user_id, year);
 ## UI/UX Design Direction
 
 ### Inspiration
+
 - Spotify Wrapped (obviously)
 - Apple Music Replay
 - GitHub Skyline
 - Monzo Year in Review
 
 ### Design Principles
+
 1. **Mobile-first** - Most sharing happens on phones
 2. **Animated/Interactive** - Scroll-driven reveals, not a static page
 3. **Dark mode default** - Matches Plex aesthetic
@@ -306,6 +325,7 @@ CREATE INDEX idx_wrapped_user_year ON wrapped_results(user_id, year);
 5. **Personal** - Use their name, their avatar, feel custom
 
 ### Color Palette (Plex-inspired)
+
 - Background: `#1f1f1f` (Plex dark)
 - Accent: `#e5a00d` (Plex gold/orange)
 - Text: `#ffffff` / `#a0a0a0`
@@ -314,23 +334,27 @@ CREATE INDEX idx_wrapped_user_year ON wrapped_results(user_id, year);
 ### Key Screens
 
 **1. Landing Page**
+
 - Hero: "Your year in music, wrapped"
 - Big "Sign in with Plex" button
 - Brief explanation (3 bullet points max)
 - Example screenshot/preview
 
 **2. Loading State**
+
 - "Fetching your listening history..."
 - Animated Plex-style spinner
 - Fun facts while waiting ("Did you know Plex was founded in...")
 
 **3. Wrapped Experience**
+
 - Scroll-driven story format
 - Each stat gets its own "slide"
 - Progressive reveal builds anticipation
 - Ends with summary card + share CTA
 
 **4. Share Card**
+
 - Optimized for social media dimensions
 - Username, avatar, year
 - Top 3 artists with album art
@@ -342,6 +366,7 @@ CREATE INDEX idx_wrapped_user_year ON wrapped_results(user_id, year);
 ## Development Setup
 
 ### Prerequisites
+
 - Node.js 18+
 - npm or pnpm
 - Netlify CLI (`npm i -g netlify-cli`)
@@ -461,12 +486,12 @@ plex-wrapped/
 
 ### Monthly Running Costs
 
-| Service | Free Tier | If It Scales |
-|---------|-----------|--------------|
-| **Netlify** | 100GB bandwidth | £15/mo (Pro) |
-| **Supabase** | 500MB DB, 2GB bandwidth | £20/mo (Pro) |
-| **Domain** | - | ~£1/mo (£10/year) |
-| **Total** | **£0** | **~£35/mo** |
+| Service      | Free Tier               | If It Scales      |
+| ------------ | ----------------------- | ----------------- |
+| **Netlify**  | 100GB bandwidth         | £15/mo (Pro)      |
+| **Supabase** | 500MB DB, 2GB bandwidth | £20/mo (Pro)      |
+| **Domain**   | -                       | ~£1/mo (£10/year) |
+| **Total**    | **£0**                  | **~£35/mo**       |
 
 ### Realistic Projections
 
@@ -475,6 +500,7 @@ plex-wrapped/
 **Viral December moment:** Could spike to £100-150, then normalize
 
 ### Domain Ideas
+
 - plexwrapped.com
 - mywrapped.audio
 - wrapped.plex.fan
@@ -485,6 +511,7 @@ plex-wrapped/
 ## Build in Public Strategy
 
 ### Platforms
+
 - **Twitter/X** - Dev updates, screenshots, polls
 - **Threads** - Mirror Twitter content
 - **Reddit** - r/PleX, r/selfhosted when ready for launch
@@ -507,6 +534,7 @@ plex-wrapped/
 **Day 7:** "It's live! Get your Plex Wrapped: [link]" (launch post)
 
 ### Engagement Tactics
+
 - Ask questions ("What stats would YOU want to see?")
 - Share struggles, not just wins
 - Reply to everyone
@@ -516,20 +544,21 @@ plex-wrapped/
 
 ## Risks & Mitigations
 
-| Risk | Likelihood | Impact | Mitigation |
-|------|------------|--------|------------|
-| Plex API changes | Low | High | Abstract API calls, monitor Plex forums |
-| Rate limiting | Medium | Medium | Aggressive caching, queue system |
-| Server connectivity issues | Medium | Medium | Clear error messages, retry logic |
-| Low play history | Medium | Low | Show "not enough data" gracefully |
-| Privacy concerns | Low | Medium | Clear policy, no raw data storage |
-| Netlify costs spike | Low | Medium | Caching, rate limiting, upgrade if needed |
+| Risk                       | Likelihood | Impact | Mitigation                                |
+| -------------------------- | ---------- | ------ | ----------------------------------------- |
+| Plex API changes           | Low        | High   | Abstract API calls, monitor Plex forums   |
+| Rate limiting              | Medium     | Medium | Aggressive caching, queue system          |
+| Server connectivity issues | Medium     | Medium | Clear error messages, retry logic         |
+| Low play history           | Medium     | Low    | Show "not enough data" gracefully         |
+| Privacy concerns           | Low        | Medium | Clear policy, no raw data storage         |
+| Netlify costs spike        | Low        | Medium | Caching, rate limiting, upgrade if needed |
 
 ---
 
 ## Open Questions
 
 1. **Branding:** "Plex Wrapped" might have trademark issues. Alternatives?
+
    - Plex Replay (Apple uses this)
    - Plex Rewind (exists but abandoned)
    - My Year in Plex
@@ -537,9 +566,11 @@ plex-wrapped/
    - Unwrapped (for Plex)
 
 2. **Scope:** Music only, or TV/Movies too?
+
    - Recommendation: Music MVP, add video later
 
 3. **Comparison features:** Do we want "you listened more than X% of users"?
+
    - Requires aggregating data across users
    - Privacy implications
    - Maybe later
@@ -581,5 +612,5 @@ When ready to build, brief Claude with:
 
 ---
 
-*Last updated: December 2024*
-*Author: Jon Grant + Claude*
+_Last updated: December 2024_
+_Author: Jon Grant + Claude_
