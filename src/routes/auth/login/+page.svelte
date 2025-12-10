@@ -14,12 +14,18 @@
 
 		<!-- Development: Manual token entry -->
 		<div class="rounded-lg bg-surface-card p-6">
-			<p class="mb-4 text-sm text-gray-300">
-				Temporary dev auth: Get your token from
-				<a href="https://www.plex.tv/claim" target="_blank" class="text-plex hover:underline">
-					plex.tv/claim
-				</a>
-			</p>
+			<p class="mb-4 text-sm text-gray-300">Temporary dev auth: Get your Plex auth token:</p>
+
+			<ol class="mb-4 space-y-2 text-sm text-gray-400">
+				<li>
+					1. Go to
+					<a href="https://app.plex.tv/desktop" target="_blank" class="text-plex hover:underline">
+						app.plex.tv
+					</a>
+				</li>
+				<li>2. Open DevTools (F12) → Application → Cookies</li>
+				<li>3. Find and copy the <code class="text-plex">X-Plex-Token</code> value</li>
+			</ol>
 
 			<form method="POST" use:enhance>
 				<label for="token" class="mb-2 block text-sm font-medium text-gray-300"> Plex Token </label>
@@ -27,7 +33,7 @@
 					type="text"
 					id="token"
 					name="token"
-					placeholder="claim-xxxxxxxxxxxx"
+					placeholder="Paste your X-Plex-Token here"
 					required
 					class="mb-4 w-full rounded-lg border border-gray-600 bg-surface px-4 py-2 text-white placeholder-gray-500 focus:border-plex focus:outline-none"
 				/>
