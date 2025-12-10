@@ -1,10 +1,5 @@
 import { redirect, fail } from '@sveltejs/kit';
-import {
-	createPlexPin,
-	getPlexAuthUrl,
-	getPlexUser,
-	exchangeClaimToken
-} from '$lib/services/plex-auth';
+import { getPlexUser, exchangeClaimToken } from '$lib/services/plex-auth';
 import type { Actions } from './$types';
 
 export const actions: Actions = {
