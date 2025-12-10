@@ -26,26 +26,31 @@
 			const servers = await getPlexServers(data.token);
 			const musicLibraries = await findMusicLibraries(servers, data.token);
 
-			let playCount = 0;
-			let serverName = '';
-			let libraryName = '';
+			let allPlays = 0;
+			const serverNames: string[] = [];
+			const libraryNames: string[] = [];
 
-			if (musicLibraries.length > 0) {
-				const { server, library } = musicLibraries[0];
-				serverName = server.name;
-				libraryName = library.title;
-
-				const serverUrl = getBestServerUrl(server);
-				const history = await getPlayHistory(serverUrl, data.token, library.key, 100);
-				playCount = history.length;
+			// Fetch play history from ALL music libraries across ALL servers
+			for (const { server, library } of musicLibraries) {
+				try {
+					const serverUrl = getBestServerUrl(server);
+					const history = await getPlayHistory(serverUrl, data.token, library.key, 100);
+					allPlays += history.length;
+					serverNames.push(server.name);
+					libraryNames.push(library.title);
+					console.log(`Fetched ${history.length} plays from ${server.name} (${library.title})`);
+				} catch (err) {
+					console.error(`Failed to fetch from ${server.name} (${library.title}):`, err);
+					// Continue to next library even if this one fails
+				}
 			}
 
 			plexData = {
 				serverCount: servers.length,
 				musicLibraryCount: musicLibraries.length,
-				serverName,
-				libraryName,
-				playCount
+				serverName: serverNames.join(', '),
+				libraryName: libraryNames.join(', '),
+				playCount: allPlays
 			};
 
 			loading = false;
