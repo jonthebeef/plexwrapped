@@ -10,6 +10,7 @@ import {
 	getPlexAuthUrl,
 	checkPinStatus,
 	getPlexUser,
+	signInWithPassword,
 	PLEX_HEADERS
 } from './plex-auth';
 
@@ -155,6 +156,70 @@ describe('plex-auth', () => {
 			});
 
 			await expect(getPlexUser('invalid-token')).rejects.toThrow('Failed to get Plex user');
+		});
+	});
+
+	describe('signInWithPassword', () => {
+		it('signs in with email and password and returns token and user', async () => {
+			mockFetch.mockResolvedValueOnce({
+				ok: true,
+				json: async () => ({
+					user: {
+						id: 12345,
+						uuid: 'user-uuid',
+						username: 'jonthebeef',
+						email: 'jon@example.com',
+						thumb: 'https://plex.tv/users/thumb.jpg',
+						authToken: 'auth-token-xyz'
+					}
+				})
+			});
+
+			const result = await signInWithPassword('jon@example.com', 'password123');
+
+			expect(result).toEqual({
+				token: 'auth-token-xyz',
+				user: {
+					id: 12345,
+					uuid: 'user-uuid',
+					username: 'jonthebeef',
+					email: 'jon@example.com',
+					thumb: 'https://plex.tv/users/thumb.jpg'
+				}
+			});
+			expect(mockFetch).toHaveBeenCalledWith(
+				'https://plex.tv/users/sign_in.json',
+				expect.objectContaining({
+					method: 'POST',
+					headers: expect.objectContaining({
+						'Content-Type': 'application/x-www-form-urlencoded'
+					})
+				})
+			);
+		});
+
+		it('throws "Invalid email or password" on 401', async () => {
+			mockFetch.mockResolvedValueOnce({
+				ok: false,
+				status: 401,
+				statusText: 'Unauthorized'
+			});
+
+			await expect(signInWithPassword('bad@example.com', 'wrong')).rejects.toThrow(
+				'Invalid email or password'
+			);
+		});
+
+		it('throws generic error on other failures', async () => {
+			mockFetch.mockResolvedValueOnce({
+				ok: false,
+				status: 500,
+				statusText: 'Internal Server Error'
+			});
+
+			await expect(signInWithPassword('jon@example.com', 'password123')).rejects.toThrow(
+				'Failed to sign in: 500 Internal Server Error'
+			);
 		});
 	});
 });

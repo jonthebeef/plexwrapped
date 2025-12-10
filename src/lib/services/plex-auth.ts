@@ -102,6 +102,48 @@ export async function exchangeClaimToken(claimToken: string): Promise<string> {
 }
 
 /**
+ * Sign in with username and password
+ * Returns auth token and user info
+ */
+export async function signInWithPassword(
+	email: string,
+	password: string
+): Promise<{ token: string; user: PlexUser }> {
+	const response = await fetch('https://plex.tv/users/sign_in.json', {
+		method: 'POST',
+		headers: {
+			...PLEX_HEADERS,
+			'Content-Type': 'application/x-www-form-urlencoded'
+		},
+		body: new URLSearchParams({
+			login: email,
+			password: password
+		})
+	});
+
+	if (!response.ok) {
+		if (response.status === 401) {
+			throw new Error('Invalid email or password');
+		}
+		throw new Error(`Failed to sign in: ${response.status} ${response.statusText}`);
+	}
+
+	const data = await response.json();
+
+	// Plex returns user data in the response
+	return {
+		token: data.user.authToken,
+		user: {
+			id: data.user.id,
+			uuid: data.user.uuid,
+			username: data.user.username,
+			email: data.user.email,
+			thumb: data.user.thumb
+		}
+	};
+}
+
+/**
  * Get the authenticated user's Plex profile
  */
 export async function getPlexUser(authToken: string): Promise<PlexUser> {
