@@ -1,23 +1,18 @@
 import { redirect, fail } from '@sveltejs/kit';
-import { getPlexUser, exchangeClaimToken } from '$lib/services/plex-auth';
+import { getPlexUser } from '$lib/services/plex-auth';
 import type { Actions } from './$types';
 
 export const actions: Actions = {
 	// Manual token auth for development (default action)
 	default: async ({ cookies, request }) => {
 		const data = await request.formData();
-		let token = (data.get('token') as string)?.trim();
+		const token = (data.get('token') as string)?.trim();
 
 		if (!token || token.length === 0) {
 			return fail(400, { error: 'Token is required' });
 		}
 
 		try {
-			// If it's a claim token (starts with "claim-"), exchange it for a real token
-			if (token.startsWith('claim-')) {
-				token = await exchangeClaimToken(token);
-			}
-
 			// Validate token by fetching user
 			const user = await getPlexUser(token);
 
