@@ -1,43 +1,23 @@
-import { redirect, fail } from '@sveltejs/kit';
-import { getPlexUser } from '$lib/services/plex-auth';
+import { redirect } from '@sveltejs/kit';
+import { createPlexPin, getPlexAuthUrl } from '$lib/services/plex-auth';
 import type { Actions } from './$types';
 
 export const actions: Actions = {
-	// Manual token auth for development (default action)
-	default: async ({ cookies, request }) => {
-		const data = await request.formData();
-		const token = (data.get('token') as string)?.trim();
+	default: async ({ cookies }) => {
+		// Create a PIN for Plex OAuth
+		const pin = await createPlexPin();
 
-		if (!token || token.length === 0) {
-			return fail(400, { error: 'Token is required' });
-		}
+		// Store PIN ID in cookie so we can poll for it in the callback
+		cookies.set('plex_pin_id', String(pin.id), {
+			path: '/',
+			httpOnly: true,
+			secure: true,
+			sameSite: 'lax',
+			maxAge: 60 * 10 // 10 minutes
+		});
 
-		try {
-			// Validate token by fetching user
-			const user = await getPlexUser(token);
-
-			// Set auth token cookie
-			cookies.set('plex_token', token, {
-				path: '/',
-				httpOnly: true,
-				secure: true,
-				sameSite: 'lax',
-				maxAge: 60 * 60 * 24 * 30 // 30 days
-			});
-
-			// Set user info cookie for display
-			cookies.set('plex_user', JSON.stringify(user), {
-				path: '/',
-				httpOnly: false, // Needs to be readable by client
-				secure: true,
-				sameSite: 'lax',
-				maxAge: 60 * 60 * 24 * 30
-			});
-
-			throw redirect(303, '/wrapped');
-		} catch (error) {
-			console.error('Token validation failed:', error);
-			return fail(401, { error: 'Invalid token - please check and try again' });
-		}
+		// Redirect to Plex authorization page
+		const authUrl = getPlexAuthUrl(pin.code);
+		throw redirect(303, authUrl);
 	}
 };
