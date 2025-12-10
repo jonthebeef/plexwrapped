@@ -21,7 +21,18 @@ export const load: PageServerLoad = async ({ cookies }) => {
 
 		// Fetch Plex data
 		const servers = await getPlexServers(token);
+		console.log('🔍 Servers found:', servers.length);
+		servers.forEach((s, i) => {
+			console.log(`  Server ${i + 1}: ${s.name} (${s.provides})`);
+		});
+
 		const musicLibraries = await findMusicLibraries(servers, token);
+		console.log('🎵 Music libraries found:', musicLibraries.length);
+		musicLibraries.forEach((ml, i) => {
+			console.log(
+				`  Library ${i + 1}: "${ml.library.title}" (type: ${ml.library.type}) on ${ml.server.name}`
+			);
+		});
 
 		// Get play history from first music library
 		let playCount = 0;
@@ -34,8 +45,27 @@ export const load: PageServerLoad = async ({ cookies }) => {
 			libraryName = library.title;
 
 			const serverUrl = getBestServerUrl(server);
+			console.log(`📀 Fetching history from ${serverUrl}/library/${library.key}`);
+
 			const history = await getPlayHistory(serverUrl, token, library.key, 100); // Limit to 100 for now
+			console.log(`📊 Play history items: ${history.length}`);
 			playCount = history.length;
+		} else {
+			console.log('⚠️  No music libraries found - checking what libraries exist...');
+			// Debug: check ALL libraries on each server
+			for (const server of servers) {
+				try {
+					const serverUrl = getBestServerUrl(server);
+					const { getLibraries } = await import('$lib/services/plex-api');
+					const allLibs = await getLibraries(serverUrl, token);
+					console.log(
+						`  📚 All libraries on ${server.name}:`,
+						allLibs.map((l) => `"${l.title}" (${l.type})`)
+					);
+				} catch (err) {
+					console.error(`  ❌ Failed to get libraries from ${server.name}:`, err);
+				}
+			}
 		}
 
 		return {
