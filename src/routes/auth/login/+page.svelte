@@ -12,7 +12,7 @@
 		if (data.pin) {
 			status = 'authorizing';
 			// Open Plex authorization page in new tab
-			window.open('https://app.plex.tv/link', '_blank');
+			window.open('https://plex.tv/link', '_blank');
 			startPolling();
 		}
 	});
